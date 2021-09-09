@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/colbyfayock/demo-github-actions.git"
+    "url": "git+https://github.com/t1m9mofficial/my-github-actions.git"
   },
   "author": "Colby Fayock <hello@colbyfayock.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/colbyfayock/demo-github-actions/issues"
+    "url": "https://github.com/t1m9mofficial/my-github-actions/issues"
   },
-  "homepage": "https://github.com/colbyfayock/demo-github-actions#readme",
+  "homepage": "https://github.com/t1m9mofficial/my-github-actions#readme",
   "devDependencies": {
     "jest": "^26.0.1"
   }
