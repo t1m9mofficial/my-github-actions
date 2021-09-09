@@ -1,18 +1,53 @@
-name: Slack Notifications
-
+name: "units-test"
 on:
   pull_request:
-    branches: [ main ]
+  push:
+    branches:
+      - main
+      - test
 
 jobs:
-  notifySlack:
-
+  # unit tests
+  units:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Notify slack
+    - uses: actions/checkout@v1
+    - run: npm ci
+    - run: npm test
+
+  # test action works running from the graph  
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: echo "${{ github.event.head_commit.message }}" | tr '\n' ' '
+    - name: get commit message
+      run: echo "COMMIT_MESSAGE=${{ github.event.head_commit.message }}" | tr '\n' ' ' >> $GITHUB_ENV
+    - name: post a message to slack
+      uses: ./
       env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: pullreminders/slack-action@master
+        INCOMING_WEBHOOK_URL: ${{ secrets.INCOMING_WEBHOOK_URL }}
       with:
-        args: '{\"channel\":\"C02EKGDPA9W\",\"text\":\"Hello world\"}'
+        text: slack-incoming-webhook sample
+        attachments: |
+          [
+            {
+              "color": "good",
+              "author_name": "${{ github.actor }}",
+              "author_icon": "${{ github.event.sender.avatar_url }}",
+              "fields": [
+                {
+                  "title": "Commit Message",
+                  "value": "${{ env.COMMIT_MESSAGE }}"
+                },
+                {
+                  "title": "GitHub Actions URL",
+                  "value": "${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}"
+                },
+                {
+                  "title": "Compare URL",
+                  "value": "${{ github.event.compare }}"
+                }
+              ]
+            }
+          ]
