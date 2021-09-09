@@ -2,7 +2,7 @@ name: Slack Notifications
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   notifySlack:
