@@ -5,12 +5,14 @@ on:
     branches: [ main ]
 
 jobs:
-  my-slack-job:
+  notifySlack:
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: homeday-de/slack-release-bot-action@main
-        with:
-          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          title: 🚀 v1.0.0
-          body: This major release means that we are live!
-          context: Slack release BOT
+    - name: Notify slack
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      uses: abinoda/slack-action@master
+      with:
+        args: '{\"channel\":\"C1234567890\",\"text\":\"Hello world\"}'
