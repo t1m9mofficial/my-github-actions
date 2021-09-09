@@ -1,8 +1,20 @@
-name: Post to a Slack channel
-  id: slack
-  uses: slackapi/slack-github-action@v1.14.0
-  with:
-    channel-id: 'C02EKGDPA9W'  # Slack channel id to post message
-    slack-message: 'posting from a github action!'
-  env:
-    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+name: Slack Notifications
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  notifySlack:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Post to a Slack channel
+      id: slack
+      uses: slackapi/slack-github-action@v1.14.0
+      with:
+       channel-id: 'CHANNEL_ID'  # Slack channel id to post message
+       slack-message: 'posting from a github action!'
+    env:
+     SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
