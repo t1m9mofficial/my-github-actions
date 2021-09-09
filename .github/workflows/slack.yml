@@ -1,18 +1,34 @@
-name: Slack Notifications
+name: CI
 
-on:
-  pull_request:
-    branches: [ main ]
+on: [push, pull_request]
 
 jobs:
-  notifySlack:
-
+  test:
+    name: JEST
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
     steps:
-    - name: Notify slack
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: pullreminders/slack-action@master
-      with:
-        args: '{\"channel\":\"C02EKGDPA9W\",\"text\":\"Hello world\"}'
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run:  |
+          yarn install
+          yarn test
+
+  notify:
+    name: Slack Notify
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always()
+    steps:
+      - name: Slack Notify
+        uses: baijunyao/action-slack-notify@v3.0.0
+        if: ${{ github.event_name == 'push' }}
+        with:
+          slack_channel_id: C02EKGDPA9W
+          slack_bot_token: ${{ secrets.SLACK_BOT_TOKEN }}
+          github_context: ${{ toJson(github) }}
